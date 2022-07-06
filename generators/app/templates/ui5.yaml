@@ -9,7 +9,12 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.ui.unified
-    - name: themelib_sap_fiori_3
+    <%_ if (useWebComponents) { _%>
+    - name: sap.ui.webc.main
+    <%_ } else { _%>
+    - name: sap.ui.table
+    <%_ } _%>
+    - name: themelib_sap_horizon
 server:
   customMiddleware:
   - name: ui5-middleware-livereload
@@ -19,3 +24,10 @@ server:
       extraExts: "xml,json,properties"
       port: 35729
       path: "webapp"
+<%_ if (useDataSource) { _%>
+  - name: ui5-middleware-simpleproxy
+    afterMiddleware: compression
+    mountPath: /odata/
+    configuration:
+      baseUri: "<%= endpoint %>"
+<%_ } _%>

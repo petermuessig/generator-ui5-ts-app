@@ -48,7 +48,7 @@ module.exports = class extends Generator {
       SAPUI5: "@sapui5/ts-types-esm"
     };
 
-    const questions = [
+    const initialQuestions = [
       {
         type: "input",
         name: "application",
@@ -160,15 +160,29 @@ module.exports = class extends Generator {
           this._entity = answers.entity;
           return this._metadata.getKeys(this._entity);
         }
-      },
+      }
+    ];
+
+    const repeatingQuestions = [
       {
-        type: "checkbox",
-        name: "properties",
-        message: "Which properties do you want to display?",
+        type: "list",
+        name: "property",
+        message: "Which property do you want to display?",
         choices: answers => {
-          return this._metadata.getProperties(this._entity);
+          const choices = this._metadata.getProperties(this._entity);
+          choices.push("");
+          return choices;
         }
-      },
+      }/*,
+      {
+        type: "confirm",
+        name: "repeat",
+        message: "Do you want to add more properties?",
+        default: true
+      }*/
+    ];
+
+    const finalQuestions = [
       {
         type: "input",
         name: "author",
@@ -183,7 +197,34 @@ module.exports = class extends Generator {
       }
     ];
 
-    const props = await this.prompt(questions);
+    const initialProps = await this.prompt(initialQuestions);
+
+    const repeatingProps = {
+      properties: []
+    }
+    if (initialProps.useDataSource) {
+
+      const loop = (questions) => {
+        return this.prompt(questions).then(props => {
+          /*
+          repeatingProps.properties.push(props.property);
+          return props.repeat ? loop(repeatingQuestions) : this.prompt([]);
+          */
+          if (props.property) {
+            repeatingProps.properties.push(props.property);
+            return loop(repeatingQuestions)
+          } else {
+            return this.prompt([]);
+          }
+        });
+      }
+      await loop(repeatingQuestions);
+
+    }
+
+    const finalProps = await this.prompt(finalQuestions);
+
+    const props = {...initialProps, ...repeatingProps, ...finalProps};
 
     // use the namespace and the application name as new directory
     if (props.newdir) {

@@ -9,7 +9,20 @@
 		"description": "{{appDescription}}",
 		"applicationVersion": {
 			"version": "1.0.0"
+		<%_ if (useDataSource) { _%>
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/odata/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "4.0"
+				}
+			}
 		}
+		<%_ } else { _%>
+		}
+		<%_ } _%>
 	},
 
 	"sap.ui": {
@@ -38,6 +51,11 @@
 				"sap.ui.core": {},
 				"sap.ui.layout": {},
 				"sap.ui.unified": {},
+				<%_ if (useWebComponents) { _%>
+				"sap.ui.webc.main": {},
+				<%_ } else { _%>
+				"sap.ui.table": {},
+				<%_ } _%>
 				"sap.m": {}
 			}
 		},
@@ -50,6 +68,18 @@
 		},
 
 		"models": {
+			<%_ if (useDataSource) { _%>
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"autoExpandSelect": true,
+					"earlyRequests": true,
+					"operationMode": "Server",
+					"synchronizationMode": "None"
+				}
+			},
+			<%_ } _%>
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {

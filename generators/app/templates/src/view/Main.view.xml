@@ -1,20 +1,45 @@
 <mvc:View
 	controllerName="<%= appId %>.controller.Main"
 	displayBlock="true"
-	xmlns="sap.m"
+<%_ if (useWebComponents) { _%>
+	xmlns="sap.ui.webc.main"
+<%_ } else { _%>
+	xmlns="sap.ui.table"
+	xmlns:m="sap.m"
+<%_ } _%>
 	xmlns:mvc="sap.ui.core.mvc">
 
-	<MessagePage
-		title="{i18n>appTitle}"
-		text="{i18n>appTitle}"
-		icon="sap-icon://accept"
-		id="page"
-		description="{i18n>appDescription}">
-		<buttons>
-			<Button
-				text="{i18n>btnText}"
-				press="sayHello" />
-		</buttons>
-	</MessagePage>
+	<%_ if (useWebComponents) { _%>
+
+	<%_ } else { _%>
+	<m:Page
+		showHeader="false"
+		enableScrolling="false"
+		class="sapUiContentPadding">
+		<m:content>
+			<Table rows="{
+					path: '/Speaker'
+				}"
+				visibleRowCount="10"
+				ariaLabelledBy="title">
+				<extension>
+					<m:OverflowToolbar style="Clear">
+						<m:Title id="title" text="Speakers"/>
+					</m:OverflowToolbar>
+				</extension>
+				<columns>
+					<%_ properties.forEach(property => { _%>
+					<Column>
+						<m:Label text="<%= property %>" />
+						<template>
+							<m:Input value="{<%= property %>}" />
+						</template>
+					</Column>
+					<%_ }); _%>
+				</columns>
+			</Table>
+		</m:content>
+	</m:Page>
+	<%_ } _%>
 
 </mvc:View>
