@@ -6,6 +6,7 @@
 <%_ } else { _%>
 	xmlns="sap.ui.table"
 	xmlns:m="sap.m"
+	xmlns:f="sap.f"
 <%_ } _%>
 	xmlns:mvc="sap.ui.core.mvc">
 
@@ -17,19 +18,29 @@
 		enableScrolling="false"
 		class="sapUiContentPadding">
 		<m:content>
-			<Table rows="{
-					path: '/Speaker'
+			<f:ShellBar
+				title="{i18n>appTitle}">
+				<f:profile>
+					<m:Avatar src="img/logo.ico" initials="UI"/>
+				</f:profile>
+			</f:ShellBar>
+			<Table id="table"
+				rows="{
+					path: '/<%= entity %>',
+					sorter: {
+						path: '<%= properties[0] %>'
+					}
 				}"
 				visibleRowCount="10"
 				ariaLabelledBy="title">
 				<extension>
 					<m:OverflowToolbar style="Clear">
-						<m:Title id="title" text="Speakers"/>
+						<m:Title id="title" text="{i18n>entityName}"/>
 					</m:OverflowToolbar>
 				</extension>
 				<columns>
 					<%_ properties.forEach(property => { _%>
-					<Column>
+					<Column <%- property == properties[0] ? "sorted=\"true\"" : "" %> sortProperty="<%= property %>">
 						<m:Label text="<%= property %>" />
 						<template>
 							<m:Input value="{<%= property %>}" />

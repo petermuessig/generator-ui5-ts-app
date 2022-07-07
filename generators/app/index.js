@@ -76,6 +76,12 @@ module.exports = class extends Generator {
         default: "com.myorg"
       },
       {
+        type: "input",
+        name: "title",
+        message: "Which title do you want to use?",
+        default: "UI5con HYBRID 2022"
+      },
+      {
         type: "list",
         name: "framework",
         message: "Which framework do you want to use?",
@@ -122,7 +128,7 @@ module.exports = class extends Generator {
         type: "confirm",
         name: "useDataSource",
         message: "Do you want to connect to an OData service?",
-        default: false
+        default: true
       },
       {
         when: response => response.useDataSource,
